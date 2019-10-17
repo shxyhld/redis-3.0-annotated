@@ -336,6 +336,11 @@ typedef struct zlentry {
  * 从 ptr 中取出节点值的编码类型，并将它保存到 encoding 变量中。
  *
  * T = O(1)
+ * 编码分为两种，整数编码和字符串编码：
+ * TODO:
+ * 如果不是字符串编码，就是整数编码，那set的时候，应该encoding set为ZIP_INT_MASK呀，
+ * 但在这里却清空了？？ 虽说清空了，不会引发调用处的逻辑错误，
+ * 难道只是为了节省一步set的ZIP_INT_MASK的操作吗？
  */
 #define ZIP_ENTRY_ENCODING(ptr, encoding) do {  \
     (encoding) = (ptr[0]); \
@@ -521,6 +526,9 @@ static void zipPrevEncodeLengthForceLarge(unsigned char *p, unsigned int len) {
  * 取出编码前置节点长度所需的字节数，并将它保存到 prevlensize 变量中。
  *
  * T = O(1)
+ * 根据节点第一个字节的值ptr[0]：
+ * <254 前置节点的长度占用一个字节，ptr[0]本身就是前置节点的长度，
+ * =254 前置节点的长度占用五个字节，ptr[0]=254 ptr[1]、ptr[2]、ptr[3]、ptr[4]这四位表示前置节点的长度。
  */
 #define ZIP_DECODE_PREVLENSIZE(ptr, prevlensize) do {                          \
     if ((ptr)[0] < ZIP_BIGLEN) {                                               \
