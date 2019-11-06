@@ -112,6 +112,9 @@ void setGenericCommand(redisClient *c, int flags, robj *key, robj *val, robj *ex
 
     // 如果设置了 NX 或者 XX 参数，那么检查条件是否不符合这两个设置
     // 在条件不符合时报错，报错的内容由 abort_reply 参数决定
+    /* SETNX 当key不存在的时候设置一个值。当key已经存在时，不做任何动作，因此此处通过lookupKeyWrite查找到
+    *  值不为NULL的时候。就直接回复了。
+    */
     if ((flags & REDIS_SET_NX && lookupKeyWrite(c->db,key) != NULL) ||
         (flags & REDIS_SET_XX && lookupKeyWrite(c->db,key) == NULL))
     {
