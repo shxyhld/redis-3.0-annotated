@@ -523,6 +523,12 @@ int isObjectRepresentableAsLongLong(robj *o, long long *llval) {
 
 /* Try to encode a string object in order to save space */
 // 尝试对字符串对象进行编码，以节约内存。
+/*
+*  主要有一下几种方式：
+*  1. 对长度小于或等于 21 字节，并且可以被解释为整数的字符串进行编码，编码之后为整数类型。
+*  2. 尝试将 RAW 编码的字符串编码为 EMBSTR 编码。
+*  3. 移除多余的空间。
+*/
 robj *tryObjectEncoding(robj *o) {
     long value;
 
@@ -597,6 +603,7 @@ robj *tryObjectEncoding(robj *o) {
      * is only entered if the length of the string is greater than
      * REDIS_ENCODING_EMBSTR_SIZE_LIMIT. */
     // 这个对象没办法进行编码，尝试从 SDS 中移除所有空余空间
+    // 前提是未使用的空间长度大于已使用空间长度的1/10.
     if (o->encoding == REDIS_ENCODING_RAW &&
         sdsavail(s) > len/10)
     {

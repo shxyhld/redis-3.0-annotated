@@ -307,6 +307,8 @@ int string2ll(const char *s, size_t slen, long long *value) {
 /* Convert a string into a long. Returns 1 if the string could be parsed into a
  * (non-overflowing) long, 0 otherwise. The value will be set to the parsed
  * value when appropriate. */
+// 将一个字符串类型转换成一个long整型，如果在没有溢出的情况下解析成功，则返回1。
+// 否则，value将会设置为已经解析的值（即如果出现了溢出，将会发生强行转换的数据截断情况）。
 int string2l(const char *s, size_t slen, long *lval) {
     long long llval;
 
