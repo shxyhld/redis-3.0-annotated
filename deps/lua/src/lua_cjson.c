@@ -1212,6 +1212,7 @@ static void json_process_value(lua_State *l, json_parse_t *json,
 }
 
 /* json_text must be null terminated string */
+/* json文本必须是以null为结尾的字符串 */
 static void lua_json_decode(lua_State *l, const char *json_text, int json_len)
 {
     json_parse_t json;
